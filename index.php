@@ -24,8 +24,7 @@ $parts = explode("/", $_SERVER["REQUEST_URI"]);
 
 $id = $parts[2] ?? null;
 
-$database = new Database("23.239.110.246", "recipefarm", "recipefarmuser", "recipeorgy69");
-
+$database = new Database("23.239.110.246", "recipefarm", "recipefarmuser", "hyperchargebrawler11");
 
 switch ($parts[1]) {
     case "recipe":
@@ -34,6 +33,9 @@ switch ($parts[1]) {
         break;
 
     default:
+        http_response_code(404);
+        header("Content-Type: application/json");
+        echo json_encode(["error" => "Resource not found"]);
         exit;
 }
 

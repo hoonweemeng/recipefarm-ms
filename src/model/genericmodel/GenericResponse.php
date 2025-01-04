@@ -1,6 +1,6 @@
 <?php
 
-namespace model\core;
+namespace model\genericmodel;
 
 class GenericResponse {
     public $success;

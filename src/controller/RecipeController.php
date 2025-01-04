@@ -1,10 +1,10 @@
 <?php
 namespace controller;
 
-use core\Controller;
 use DAL\RecipeDAL;
+use utils\Utility;
 
-class RecipeController extends Controller
+class RecipeController
 {
     public function __construct(private RecipeDAL $gateway)
     {
@@ -13,33 +13,52 @@ class RecipeController extends Controller
     
     public function processRequest(string $method, ?string $id): void
     {
-        if ($method != $_POST) 
-        {
-            echo 'h0';
+        if ($method != "POST")  
+        { 
+            Utility:: errorNotFound();
         }
+
         switch ($id)  
         {
             case "create":
+                $this->createRecipe();
+                break;
+
+            case "update":
                 // Code to execute   
                 break;
 
-            case "create":
-                // Code to execute   
-                break;
-
-            case "create":
+            case "delete":
                 // Code to execute   
                 break;
                 
-            case "create":
+            case "search":
+                // Code to execute   
+                break;
+                
+            case "latest":
+                // Code to execute   
+                break;
+                
+            case "detail":
                 // Code to execute   
                 break;
 
-                
-            case "create":
-                // Code to execute   
-                break;
+            default:
+                Utility:: errorNotFound();
+
         }
+    }
+
+    public function createRecipe(): void
+    {
+        $data = (array) json_decode(file_get_contents("php://input"), true);
+        Utility:: deco
+    }
+
+    public function updateRecipe(): void
+    {
+        
     }
     
     private function processResourceRequest(string $method, string $id): void
