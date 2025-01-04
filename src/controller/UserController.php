@@ -2,9 +2,10 @@
 namespace controller;
 
 use DAL\RecipeDAL;
+use model\base\User;
 use utils\Utility;
 
-class RecipeController
+class UserController
 {
     public function __construct(private RecipeDAL $gateway)
     {
@@ -20,8 +21,8 @@ class RecipeController
 
         switch ($id)  
         {
-            case "create":
-                $this->createRecipe();
+            case "register":
+                $this->createUser();
                 break;
 
             case "update":
@@ -32,11 +33,7 @@ class RecipeController
                 // Code to execute   
                 break;
                 
-            case "search":
-                // Code to execute   
-                break;
-                
-            case "latest":
+            case "login":
                 // Code to execute   
                 break;
                 
@@ -50,9 +47,10 @@ class RecipeController
         }
     }
 
-    public function createRecipe(): void
+    public function createUser(): void
     {
-        $data = (array) json_decode(file_get_contents("php://input"), true);
+        $data = Utility:: fromJson(file_get_contents("php://input"), User::class);
+        echo $data->email;
     }
 
     public function updateRecipe(): void
