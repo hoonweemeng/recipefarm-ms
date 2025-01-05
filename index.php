@@ -7,6 +7,7 @@ require "Database.php";
 use DAL\RecipeDAL;
 use controller\RecipeController;
 use controller\UserController;
+use DAL\UserDAL;
 
 spl_autoload_register(function ($class) {
     $file = __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';
@@ -34,7 +35,7 @@ switch ($parts[1]) {
         break;
 
     case "user":
-        $gateway = new RecipeDAL($database);
+        $gateway = new UserDAL($database);
         $controller = new UserController($gateway);
         break;
     

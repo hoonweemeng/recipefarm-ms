@@ -50,6 +50,10 @@ class Utility
         return self::mapToClass($data, $className);
     }
 
+    public static function getRequestBody(string $className): object {
+        return Utility:: fromJson(file_get_contents("php://input"), $className);
+    }
+
     // Map an associative array to a class object
     private static function mapToClass(array $data, string $className): object {
         if (!class_exists($className)) {
@@ -74,6 +78,24 @@ class Utility
         }
 
         return $object;
+    }
+
+    public static function trimData($model)
+    {
+        if ($model === null) {
+            throw new \InvalidArgumentException('Model cannot be null');
+        }
+
+        // Get all public properties of the model
+        $properties = get_object_vars($model);
+
+        foreach ($properties as $property => $value) {
+            // Check if the property is a string and is writable
+            if (is_string($value) && property_exists($model, $property)) {
+                // Trim the string value and set it back to the model property
+                $model->$property = trim($value);
+            }
+        }
     }
     
 

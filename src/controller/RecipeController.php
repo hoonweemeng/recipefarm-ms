@@ -5,6 +5,7 @@ use DAL\RecipeDAL;
 use utils\Utility;
 use model\genericmodel\GenericResponse;
 use model\base\Recipe;
+use model\base\User;
 use model\request\RecipeIdRequest;
 
 class RecipeController
@@ -55,7 +56,7 @@ class RecipeController
 
     public function createRecipe(): void
     {
-        $data = Utility:: fromJson(file_get_contents("php://input"), Recipe::class);
+        $data = Utility:: getRequestBody(Recipe::class);
         
         //validate
         $userId = Utility:: getUserId();
@@ -70,7 +71,6 @@ class RecipeController
         }
 
         $recipeId = Utility:: generateUUID();
-        echo $recipeId;
         $data->recipeId = $recipeId;
         $this->recipeDAL->createRecipe($data);
                 
