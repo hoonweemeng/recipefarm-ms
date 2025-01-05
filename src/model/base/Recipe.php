@@ -10,6 +10,7 @@ class Recipe
     public string $description;
     public int $duration;
     public int $servings;
+    public string $ingredients;
     public string $instructions;
     public ?string $recipeImage;
     public ?string $recipeImageExt;
@@ -23,6 +24,7 @@ class Recipe
         string $description,
         int $duration,
         int $servings,
+        string $ingredients,
         string $instructions,
         ?string $recipeImage,
         ?string $recipeImageExt,
@@ -35,6 +37,7 @@ class Recipe
         $this->description = $description;
         $this->duration = $duration;
         $this->servings = $servings;
+        $this->ingredients = $ingredients;
         $this->instructions = $instructions;
         $this->recipeImage = $recipeImage;
         $this->recipeImageExt = $recipeImageExt;

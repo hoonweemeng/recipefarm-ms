@@ -16,6 +16,24 @@ class Utility
         exit;
     }
 
+    public static function generateUUID(): string {
+        // Get current timestamp in milliseconds
+        $timestamp = (int)(microtime(true) * 1000);  // Millisecond precision
+        
+        // Generate a random value for added randomness (48-bit random value)
+        $randomBytes = bin2hex(random_bytes(6));  // Generates 12 random hex digits (48 bits)
+
+        // Format the UUID as 8-4-4-4-12 using timestamp and random bytes
+        $uuid = sprintf('%08x-%04x-%04x-%04x-%012x',
+            $timestamp & 0xFFFFFFFF, // Use the lower 32 bits of the timestamp
+            mt_rand(0, 0xFFFF), // Random 4 hex digits
+            mt_rand(0, 0xFFFF), // Random 4 hex digits
+            mt_rand(0, 0xFFFF), // Random 4 hex digits
+            hexdec(substr($randomBytes, 0, 12)) // Random 12 hex digits
+        );
+        
+        return $uuid;
+    } 
     
     // Json Handler
 

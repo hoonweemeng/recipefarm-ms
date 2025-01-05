@@ -3,10 +3,13 @@ namespace controller;
 
 use DAL\RecipeDAL;
 use utils\Utility;
+use model\genericmodel\GenericResponse;
+use model\base\Recipe;
+use model\request\RecipeIdRequest;
 
 class RecipeController
 {
-    public function __construct(private RecipeDAL $gateway)
+    public function __construct(private RecipeDAL $recipeDAL)
     {
     }
     
@@ -52,7 +55,27 @@ class RecipeController
 
     public function createRecipe(): void
     {
-        $data = (array) json_decode(file_get_contents("php://input"), true);
+        $data = Utility:: fromJson(file_get_contents("php://input"), Recipe::class);
+        
+        //validate
+        $userId = Utility:: getUserId();
+        if (!isset($userId))
+        {
+            //error
+            echo 'user not logged in';
+            exit;
+        }
+        else {
+            $data->userId = $userId;
+        }
+
+        $recipeId = Utility:: generateUUID();
+        echo $recipeId;
+        $data->recipeId = $recipeId;
+        $this->recipeDAL->createRecipe($data);
+                
+        $response = new GenericResponse(true, null, new RecipeIdRequest($recipeId));
+        echo json_encode($response);
     }
 
     public function updateRecipe(): void
@@ -60,104 +83,6 @@ class RecipeController
         
     }
     
-    private function processResourceRequest(string $method, string $id): void
-    {
-        $product = $this->gateway->get($id);
-        
-        if ( ! $product) {
-            http_response_code(404);
-            echo json_encode(["message" => "Product not found"]);
-            return;
-        }
-        
-        switch ($method) {
-            case "GET":
-                echo json_encode($product);
-                break;
-                
-            case "PATCH":
-                $data = (array) json_decode(file_get_contents("php://input"), true);
-                
-                $errors = $this->getValidationErrors($data, false);
-                
-                if ( ! empty($errors)) {
-                    http_response_code(422);
-                    echo json_encode(["errors" => $errors]);
-                    break;
-                }
-                
-                $rows = $this->gateway->update($product, $data);
-                
-                echo json_encode([
-                    "message" => "Product $id updated",
-                    "rows" => $rows
-                ]);
-                break;
-                
-            case "DELETE":
-                $rows = $this->gateway->delete($id);
-                
-                echo json_encode([
-                    "message" => "Product $id deleted",
-                    "rows" => $rows
-                ]);
-                break;
-                
-            default:
-                http_response_code(405);
-                header("Allow: GET, PATCH, DELETE");
-        }
-    }
-    
-    private function processCollectionRequest(string $method): void
-    {
-        switch ($method) {
-            case "GET":
-                echo json_encode($this->gateway->getAll());
-                break;
-                
-            case "POST":
-                $data = (array) json_decode(file_get_contents("php://input"), true);
-                
-                $errors = $this->getValidationErrors($data);
-                
-                if ( ! empty($errors)) {
-                    http_response_code(422);
-                    echo json_encode(["errors" => $errors]);
-                    break;
-                }
-                
-                $id = $this->gateway->create($data);
-                
-                http_response_code(201);
-                echo json_encode([
-                    "message" => "Product created",
-                    "id" => $id
-                ]);
-                break;
-            
-            default:
-                http_response_code(405);
-                header("Allow: GET, POST");
-        }
-    }
-    
-    private function getValidationErrors(array $data, bool $is_new = true): array
-    {
-        $errors = [];
-        
-        if ($is_new && empty($data["name"])) {
-            $errors[] = "name is required";
-        }
-        
-        if (array_key_exists("size", $data)) {
-            if (filter_var($data["size"], FILTER_VALIDATE_INT) === false) {
-                $errors[] = "size must be an integer";
-            }
-        }
-        
-        return $errors;
-    }
 }
 
 
