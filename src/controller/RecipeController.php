@@ -74,7 +74,7 @@ class RecipeController
         $data->recipeId = $recipeId;
         $this->recipeDAL->createRecipe($data);
                 
-        $response = new GenericResponse(true, null, new RecipeIdRequest($recipeId));
+        $response = new GenericResponse(true, null, null, new RecipeIdRequest($recipeId));
         echo json_encode($response);
     }
 

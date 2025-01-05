@@ -3,13 +3,15 @@
 namespace model\genericmodel;
 
 class GenericResponse {
-    public $success;
-    public $errorMessage;
+    public bool $success;
+    public ?string $errorMessage;
+    public ?array $validationErrors;
     public $data;
 
-    public function __construct($success = false, $errorMessage = null, $data = null) {
+    public function __construct(bool $success = false, ?string $errorMessage = null, ?array $validationErrors = null, $data = null) {
         $this->success = $success;
         $this->errorMessage = $errorMessage;
+        $this->validationErrors = $validationErrors;
         $this->data = $data;
     }
 

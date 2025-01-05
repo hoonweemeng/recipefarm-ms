@@ -4,7 +4,7 @@ namespace model\base;
 
 class User
 {
-    public string $userId;
+    public ?string $userId;
     public string $email;
     public string $username;
     public ?string $password;
@@ -12,13 +12,14 @@ class User
     public ?string $profileImage;
     public ?string $profileImageExt;
 
-    public function __construct(string $email = '', string $username = '', ?string $password = null)
+    public function __construct(string $userId = null, string $email = '', string $username = '', ?string $password = null, string $bio = "", ?string $profileImage = null, ?string $profileImageExt = null)
     {
+        $this->userId = $userId;
         $this->email = $email;
         $this->username = $username;
         $this->password = $password;
-        $this->bio = '';
-        $this->profileImage = null;
-        $this->profileImageExt = null;
+        $this->bio = $bio;
+        $this->profileImage = $profileImage;
+        $this->profileImageExt = $profileImageExt;
     }
 }
