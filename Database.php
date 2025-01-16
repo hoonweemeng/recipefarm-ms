@@ -10,7 +10,7 @@ class Database
         
     public function getConnection(): PDO
     {
-        $dsn = "mysql:host={$this->host};dbname={$this->name};charset=utf8";
+        $dsn = "mysql:host={$this->host};dbname={$this->name};port=3306;charset=utf8";
         
         return new PDO($dsn, $this->user, $this->password, [
             PDO::ATTR_EMULATE_PREPARES => false,
