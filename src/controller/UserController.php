@@ -77,8 +77,8 @@ class UserController
         
         $this->userDAL->createUser($userId, $data->email, $data->username, $hashedPassword);
 
-        $response = new GenericResponse(false, null, null, new IdModel($userId));
-        echo json_encode(new GenericResponse(true, null, null, $response));
+        $response = new GenericResponse(true, null, null, new IdModel($userId));
+        echo json_encode($response);
     }
 
     public function login(): void 
