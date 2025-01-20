@@ -43,12 +43,28 @@ class UserController
                 break;
                 
             case "detail":
-                // Code to execute   
+                $this->getUserDetail();
                 break;
 
             default:
                 Utility:: errorNotFound();
 
+        }
+    }
+
+    public function getUserDetail(): void 
+    {        
+        $userId = Utility:: getUserId();
+        $user = $this->userDAL->getUserDetailByUserId($userId);
+
+        if ($user == null) {
+            $response = new GenericResponse(false, "User does not exist.", null, null);
+            echo json_encode($response);
+        }
+        else {
+            $user->password = null;
+            $response = new GenericResponse(true,null,null,$user);
+            echo json_encode($response);
         }
     }
 
