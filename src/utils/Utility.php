@@ -6,7 +6,9 @@ class Utility
 {
     public static function getUserId(): ?string
     {
-        return getallheaders()["userId"] ?? null;
+        $headers = apache_request_headers() ?: [];
+        $headers = array_change_key_case($headers, CASE_LOWER); // Make keys case-insensitive
+        return $headers["userid"] ?? null;
     }
 
     public static function errorNotFound(): void {
