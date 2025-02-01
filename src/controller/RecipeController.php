@@ -5,8 +5,7 @@ use DAL\RecipeDAL;
 use utils\Utility;
 use model\genericmodel\GenericResponse;
 use model\base\Recipe;
-use model\base\User;
-use model\request\RecipeIdRequest;
+use model\genericmodel\IdModel;
 
 class RecipeController
 {
@@ -29,7 +28,7 @@ class RecipeController
                 break;
 
             case "update":
-                // Code to execute   
+                $this->updateRecipe(); 
                 break;
 
             case "delete":
@@ -74,13 +73,30 @@ class RecipeController
         $data->recipeId = $recipeId;
         $this->recipeDAL->createRecipe($data);
                 
-        $response = new GenericResponse(true, null, null, new RecipeIdRequest($recipeId));
+        $response = new GenericResponse(true, null, null, new IdModel($recipeId));
         echo json_encode($response);
     }
 
     public function updateRecipe(): void
     {
+        $data = Utility:: getRequestBody(Recipe::class);
         
+        //validate
+        $userId = Utility:: getUserId();
+        if (!isset($userId))
+        {
+            //error
+            echo 'user not logged in';
+            exit;
+        }
+        else {
+            $data->userId = $userId;
+        }
+
+        $this->recipeDAL->updateRecipe($data);
+                
+        $response = new GenericResponse(true, null, null, new IdModel($data->recipeId));
+        echo json_encode($response);
     }
     
 }
