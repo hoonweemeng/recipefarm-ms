@@ -124,7 +124,7 @@ BEGIN
     SET offsetValue = (page - 1) * pageSize;
 
     -- Perform the query to get the latest recipes, sorted by timestamp
-    SELECT r.recipeId, r.title, r.description, r.duration, r.servings, r.instructions, r.recipeImage, r.recipeImageExt, r.timestamp, r.userId, r.likes
+    SELECT r.recipeId, r.title, r.description, r.duration, r.servings, r.ingredients, r.instructions, r.recipeImage, r.recipeImageExt, r.timestamp, r.userId, r.likes
     FROM recipes r
     ORDER BY r.timestamp DESC 
     LIMIT pageSize OFFSET offsetValue;
@@ -143,7 +143,7 @@ BEGIN
     SET offsetValue = (page - 1) * pageSize;
 
     -- Perform the query to get the latest recipes, sorted by timestamp
-    SELECT r.recipeId, r.title, r.description, r.duration, r.servings, r.instructions, r.recipeImage, r.recipeImageExt, r.timestamp, r.userId, r.likes
+    SELECT r.recipeId, r.title, r.description, r.duration, r.servings, r.ingredients, r.instructions, r.recipeImage, r.recipeImageExt, r.timestamp, r.userId, r.likes
     FROM recipes r 
     INNER JOIN bookmarks b ON r.recipeId = b.recipeId 
     WHERE b.userId = currentUserId 

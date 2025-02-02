@@ -61,24 +61,31 @@ class Utility
         if (!class_exists($className)) {
             throw new \InvalidArgumentException("Class $className does not exist");
         }
+        
         $reflectionClass = new \ReflectionClass($className);
-        $object = $reflectionClass->newInstanceWithoutConstructor();
-
-        foreach ($data as $key => $value) {
-            if ($reflectionClass->hasProperty($key)) {
-                $property = $reflectionClass->getProperty($key);
-                if ($property->isPublic()) {
-                    $property->setValue($object, $value);
+        $constructor = $reflectionClass->getConstructor();
+        
+        // If no constructor, use default instantiation
+        if (!$constructor) {
+            $object = $reflectionClass->newInstance();
+        } else {
+            $params = [];
+            foreach ($constructor->getParameters() as $param) {
+                $paramName = $param->getName();
+                $paramType = $param->getType();
+    
+                if ($paramType && !$paramType->isBuiltin() && isset($data[$paramName])) {
+                    // If the parameter is a class (e.g., Pagination), instantiate it recursively
+                    $paramClass = $paramType->getName();
+                    $params[] = self::mapToClass($data[$paramName], $paramClass);
                 } else {
-                    // Optionally handle private/protected properties
-                    $setter = 'set' . ucfirst($key);
-                    if (method_exists($object, $setter)) {
-                        $object->$setter($value);
-                    }
+                    // Pass raw data (for primitives like int, string)
+                    $params[] = $data[$paramName] ?? null;
                 }
             }
+            $object = $reflectionClass->newInstanceArgs($params);
         }
-
+        
         return $object;
     }
 

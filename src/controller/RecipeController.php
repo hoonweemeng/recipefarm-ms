@@ -6,6 +6,7 @@ use utils\Utility;
 use model\genericmodel\GenericResponse;
 use model\base\Recipe;
 use model\genericmodel\IdModel;
+use model\request\PaginationRequest;
 
 class RecipeController
 {
@@ -40,7 +41,7 @@ class RecipeController
                 break;
                 
             case "latest":
-                // Code to execute   
+                $this->latestRecipe();   
                 break;
                 
             case "detail":
@@ -96,6 +97,16 @@ class RecipeController
         $this->recipeDAL->updateRecipe($data);
                 
         $response = new GenericResponse(true, null, null, new IdModel($data->recipeId));
+        echo json_encode($response);
+    }
+
+    public function latestRecipe(): void
+    {
+        $data = Utility:: getRequestBody(PaginationRequest::class);
+
+        $recipeList = $this->recipeDAL->getLatestRecipes($data->pagination);
+                
+        $response = new GenericResponse(true, null, null, $recipeList);
         echo json_encode($response);
     }
     

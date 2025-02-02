@@ -108,16 +108,14 @@ class RecipeDAL
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':recipeId', $recipeId, PDO::PARAM_STR);
         
-        $this->conn->beginTransaction(); // Start a transaction
-        
         try {
-            $stmt->execute(); // Execute the query
-            $recipes = $this->toRecipeList($stmt); // Convert the result set to a list
-            $this->conn->commit(); // Commit changes
-            
-            return $recipes[0] ?? null; // Return the first recipe or null if none found
+            $stmt->execute(); // Execute stored procedure
+            $recipes = $this->toRecipeList($stmt); // Convert result set to list of Recipe objects
+    
+            $stmt->closeCursor(); // Free up the result set (important!)
+    
+            return $recipes[0] ?? null; // Return the first recipe or null if none found;
         } catch (\Exception $e) {
-            $this->conn->rollBack(); // Rollback if an error occurs
             throw $e; // Rethrow the exception
         }
     }
@@ -131,16 +129,14 @@ class RecipeDAL
         $stmt->bindValue(':pageNo', $pagination->currentPage, PDO::PARAM_INT);
         $stmt->bindValue(':pageSize', $pagination->pageSize, PDO::PARAM_INT);
     
-        $this->conn->beginTransaction(); // Start a transaction
-        
         try {
-            $stmt->execute(); // Execute the stored procedure
-            $recipes = $this->toRecipeList($stmt); // Convert the result set to a list of Recipe objects
-            $this->conn->commit(); // Commit changes
-            
-            return $recipes; // Return the list of recipes
+            $stmt->execute(); // Execute stored procedure
+            $recipes = $this->toRecipeList($stmt); // Convert result set to list of Recipe objects
+    
+            $stmt->closeCursor(); // Free up the result set (important!)
+    
+            return $recipes;
         } catch (\Exception $e) {
-            $this->conn->rollBack(); // Rollback if an error occurs
             throw $e; // Rethrow the exception
         }
     }
@@ -148,22 +144,18 @@ class RecipeDAL
     public function getLatestRecipes(Pagination $pagination): array
     {
         $sql = "CALL GetLatestRecipes(:pageNo, :pageSize)";
-        
         $stmt = $this->conn->prepare($sql);
         $stmt->bindValue(':pageNo', $pagination->currentPage, PDO::PARAM_INT);
         $stmt->bindValue(':pageSize', $pagination->pageSize, PDO::PARAM_INT);
     
-        $this->conn->beginTransaction(); // Start a transaction
-        
         try {
-            $stmt->execute(); // Execute the stored procedure
-            $recipes = $this->toRecipeList($stmt); // Convert the result set to a list of Recipe objects
-            $this->conn->commit(); // Commit changes
-            
-            return $recipes; // Return the list of recipes
-
+            $stmt->execute(); // Execute stored procedure
+            $recipes = $this->toRecipeList($stmt); // Convert result set to list of Recipe objects
+    
+            $stmt->closeCursor(); // Free up the result set (important!)
+    
+            return $recipes;
         } catch (\Exception $e) {
-            $this->conn->rollBack(); // Rollback if an error occurs
             throw $e; // Rethrow the exception
         }
     }
@@ -176,17 +168,15 @@ class RecipeDAL
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':pageNo', $pagination->currentPage, PDO::PARAM_INT);
         $stmt->bindValue(':pageSize', $pagination->pageSize, PDO::PARAM_INT);
-    
-        $this->conn->beginTransaction(); // Start a transaction
         
         try {
-            $stmt->execute(); // Execute the stored procedure
-            $recipes = $this->toRecipeList($stmt); // Convert the result set to a list of Recipe objects
-            $this->conn->commit(); // Commit changes
-            
-            return $recipes; // Return the list of recipes
+            $stmt->execute(); // Execute stored procedure
+            $recipes = $this->toRecipeList($stmt); // Convert result set to list of Recipe objects
+    
+            $stmt->closeCursor(); // Free up the result set (important!)
+    
+            return $recipes;
         } catch (\Exception $e) {
-            $this->conn->rollBack(); // Rollback if an error occurs
             throw $e; // Rethrow the exception
         }
     }
