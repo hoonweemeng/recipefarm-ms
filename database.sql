@@ -130,6 +130,26 @@ BEGIN
     LIMIT pageSize OFFSET offsetValue;
 END;
 
+CREATE PROCEDURE GetUserRecipes(
+    IN currentUserId CHAR(36),
+    IN page INT,
+    IN pageSize INT
+)
+BEGIN
+    -- Declare variables for offset calculation
+    DECLARE offsetValue INT;
+
+    -- Calculate the offset for pagination
+    SET offsetValue = (page - 1) * pageSize;
+
+    -- Perform the query to get the latest recipes, sorted by timestamp
+    SELECT r.recipeId, r.title, r.description, r.duration, r.servings, r.ingredients, r.instructions, r.recipeImage, r.recipeImageExt, r.timestamp, r.userId, r.likes
+    FROM recipes r
+    WHERE r.userId = currentUserId
+    ORDER BY r.timestamp DESC
+    LIMIT pageSize OFFSET offsetValue;
+END;
+
 CREATE PROCEDURE GetBookmarkRecipes(
     IN currentUserId CHAR(36),
     IN page INT,
