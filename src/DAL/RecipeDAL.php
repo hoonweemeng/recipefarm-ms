@@ -160,6 +160,26 @@ class RecipeDAL
         }
     }
 
+    public function getUserRecipes(string $userId, Pagination $pagination): array
+    {
+        $sql = "CALL GetUserRecipes(:userId, :pageNo, :pageSize)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':pageNo', $pagination->currentPage, PDO::PARAM_INT);
+        $stmt->bindValue(':pageSize', $pagination->pageSize, PDO::PARAM_INT);
+    
+        try {
+            $stmt->execute(); // Execute stored procedure
+            $recipes = $this->toRecipeList($stmt); // Convert result set to list of Recipe objects
+    
+            $stmt->closeCursor(); // Free up the result set (important!)
+    
+            return $recipes;
+        } catch (\Exception $e) {
+            throw $e; // Rethrow the exception
+        }
+    }
+
     public function searchRecipe(string $name, Pagination $pagination): array
     {
         $sql = "CALL SearchRecipesByTitle(:name, :pageNo, :pageSize)";
@@ -197,7 +217,7 @@ class RecipeDAL
                 $row['instructions'],
                 $row['recipeImage'] ?? null,
                 $row['recipeImageExt'] ?? null,
-                new \DateTime($row['timestamp']), // Convert timestamp to DateTime
+                $row['timestamp'],
                 $row['userId'],
                 (int)$row['likes']
             );

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 require "Database.php";
 
+use controller\BookmarkController;
 use DAL\RecipeDAL;
 use controller\RecipeController;
 use controller\UserController;
+use DAL\BookmarkDAL;
 use DAL\UserDAL;
 
 spl_autoload_register(function ($class) {
@@ -38,7 +40,11 @@ switch ($parts[1]) {
         $gateway = new UserDAL($database);
         $controller = new UserController($gateway);
         break;
-    
+
+    case "bookmark":
+        $gateway = new BookmarkDAL($database);
+        $controller = new BookmarkController($gateway);
+        break;
 
     default:
         http_response_code(404);

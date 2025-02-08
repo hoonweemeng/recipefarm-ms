@@ -14,7 +14,7 @@ class Recipe
     public ?string $instructions;
     public ?string $recipeImage;
     public ?string $recipeImageExt;
-    public ?\DateTime $timestamp;
+    public ?string $timestamp;
     public ?string $userId;
     public ?int $likes;
 
@@ -28,7 +28,7 @@ class Recipe
         ?string $instructions,
         ?string $recipeImage,
         ?string $recipeImageExt,
-        ?\DateTime $timestamp,
+        ?string $timestamp,
         ?string $userId,
         ?int $likes
     ) {

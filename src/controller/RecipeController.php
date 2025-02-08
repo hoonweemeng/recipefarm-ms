@@ -6,7 +6,9 @@ use utils\Utility;
 use model\genericmodel\GenericResponse;
 use model\base\Recipe;
 use model\genericmodel\IdModel;
+use model\genericmodel\Pagination;
 use model\request\PaginationRequest;
+use model\request\GetUserRecipeRequest;
 
 class RecipeController
 {
@@ -48,6 +50,14 @@ class RecipeController
                 // Code to execute   
                 break;
 
+            case "user":
+                $this->getUserRecipe();
+                break;
+
+            case "bookmark":
+                $this->getBookmarkRecipe();
+                break;
+
             default:
                 Utility:: errorNotFound();
 
@@ -63,7 +73,7 @@ class RecipeController
         if (!isset($userId))
         {
             //error
-            echo 'user not logged in';
+            echo json_encode(new GenericResponse(false, "user not logged in", null, null));
             exit;
         }
         else {
@@ -87,7 +97,7 @@ class RecipeController
         if (!isset($userId))
         {
             //error
-            echo 'user not logged in';
+            echo json_encode(new GenericResponse(false, "user not logged in", null, null));
             exit;
         }
         else {
@@ -109,7 +119,36 @@ class RecipeController
         $response = new GenericResponse(true, null, null, $recipeList);
         echo json_encode($response);
     }
-    
+
+    public function getUserRecipe(): void
+    {
+        $data = Utility:: getRequestBody(GetUserRecipeRequest::class);
+
+        $recipeList = $this->recipeDAL->getUserRecipes($data->userId, $data->Pagination);
+                
+        $response = new GenericResponse(true, null, null, $recipeList);
+        echo json_encode($response);
+    }
+
+    public function getBookmarkRecipe(): void
+    {
+        $data = Utility:: getRequestBody(PaginationRequest::class);
+
+        //validate
+        $userId = Utility:: getUserId();
+        if (!isset($userId))
+        {
+            //error
+            echo json_encode(new GenericResponse(false, "user not logged in", null, null));
+            exit;
+        }
+
+        $recipeList = $this->recipeDAL->getBookmarkRecipes($userId, $data->pagination);
+                
+        $response = new GenericResponse(true, null, null, $recipeList);
+        echo json_encode($response);
+    }
+
 }
 
 

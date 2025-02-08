@@ -54,7 +54,10 @@ class UserController
 
     public function getUserDetail(): void 
     {        
-        $userId = Utility:: getUserId();
+        $data = Utility:: getRequestBody(IdModel::class);
+
+        $userId = $data->id;
+        
         $user = $this->userDAL->getUserDetailByUserId($userId);
 
         if ($user == null) {
