@@ -124,7 +124,7 @@ class RecipeController
     {
         $data = Utility:: getRequestBody(GetUserRecipeRequest::class);
 
-        $recipeList = $this->recipeDAL->getUserRecipes($data->userId, $data->Pagination);
+        $recipeList = $this->recipeDAL->getUserRecipes($data->userId, $data->pagination);
                 
         $response = new GenericResponse(true, null, null, $recipeList);
         echo json_encode($response);
