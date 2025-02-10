@@ -67,6 +67,7 @@ class RecipeDAL
         $stmt->bindValue(':instructions', $recipe->instructions, PDO::PARAM_STR);
         $stmt->bindValue(':recipeImage', $recipe->recipeImage, PDO::PARAM_STR);
         $stmt->bindValue(':recipeImageExt', $recipe->recipeImageExt, PDO::PARAM_STR);
+        $stmt->bindValue(':recipeId', $recipe->recipeId, PDO::PARAM_STR);
         
         $this->conn->beginTransaction(); // Start a transaction
         
